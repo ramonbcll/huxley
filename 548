@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node node;
+typedef struct stack stack;
+struct node {
+  int item;
+  node *next;
+  node *prev;
+};
+
+struct stack {
+  int size;
+  node *top;
+};
+
+stack* createStack() {
+  stack *new_stack = (stack*) malloc(sizeof(stack));
+  new_stack->size = 0;
+  new_stack->top = NULL;
+  return new_stack;
+}
+
+node* add(node *head, int item) {
+  node *new_node = (node*) malloc(sizeof(node));
+  new_node->item = item;
+  new_node->next = head;
+  return new_node;
+}
+
+node* reverse(node* list, node* previous) {
+  node* current = list->next;
+  node* aux;
+  previous->next = NULL;
+
+  while (current->next != NULL) {
+    aux = current->next;
+    current->next = previous;
+    previous = current;
+    current = aux;
+  }
+  current->next = previous;
+  return current;
+}
+
+void print(node* head) {
+  if(head == NULL) {
+    return;
+  }
+  if(head->next == NULL) {
+    printf("%d\n", head->item);
+  }
+  else {
+    printf("%d ", head->item);
+  }
+  print(head->next);
+}
+
+void push(stack *stack) {
+  int n;
+  char t;
+  node *list = NULL;
+
+  while (1) {
+    scanf("%d%c", &n, &t);
+    list = add(list, n);
+    if(t == '\n') {
+      break;
+    }
+  }
+  if(stack->top != NULL) {
+    list->prev = stack->top;
+  }
+  stack->top = list;
+  stack->size += 1;
+}
+
+int pop_list(node *list) {
+  if(list == NULL) {
+    return;
+  }
+  free(list);
+  pop_list(list->next);
+}
+
+void pop(stack *stack) {
+  if(stack->size == 0) {
+    printf("EMPTY STACK\n");
+    return;
+  }
+  node *list = reverse(stack->top, stack->top);
+  print(list);
+  node *aux = stack->top->prev;
+  pop_list(stack->top);
+  stack->top = aux;
+  stack->size --;
+}
+
+int main() {
+  int i, d;
+  char n[6];
+  stack *stack = createStack();
+
+  while (scanf(" %[^\n]", n) != EOF) {
+    if(n[1] == 'U') {
+      push(stack);
+    }
+    else {
+      pop(stack);
+    }
+  }
+
+  return 0;
+}
