@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node node;
+struct node {
+  char item;
+  node *next;
+};
+
+node* create(char item) {
+  node *new_node = (node*) malloc(sizeof(node));
+  new_node->item = item;
+  new_node->next = NULL;
+  return new_node;
+}
+
+node* add(node *head, char item) {
+  if(head == NULL) {
+    return create(item);
+  }
+  node *new_node = create(item);
+  node *aux = head;
+  while(aux->next != NULL) {
+    aux = aux->next;
+  }
+  aux->next = new_node;
+  return head;
+}
+
+void biggest(node *list, node *aux) {
+  int initial = 0, final = 0, c_initial = 0, c_final = 0, m_total = 0, count = 0;
+
+  while(aux != NULL) {
+    if(aux->item == '0') {
+      initial = count;
+
+      while(aux != NULL && aux->item == '0') {
+        aux = aux->next;
+        count += 1;
+      }
+
+      final = count;
+
+      if(m_total < final - initial) {
+        m_total = final - initial;
+        c_initial = initial;
+        c_final = final - 1;
+      }
+    }
+    else {
+      aux = aux->next;
+      count += 1;
+    }
+  }
+  if(m_total < final - initial) {
+    m_total = final - initial;
+    c_initial = initial;
+    c_final = final - 1;
+  }
+  printf("%d %d\n", c_initial, c_final);
+}
+
+int main () {
+  node *list = NULL;
+  int i;
+  char num[300];
+  scanf("%s", num);
+
+  while (!((strlen(num) == 1) && (num[0] == '0'))) {
+    for(i = 0; i < strlen(num); i++) {
+      list = add(list, num[i]);
+    }
+    biggest(list, list);
+    list = NULL;
+
+    scanf("%s", num);
+  }
+
+
+  return 0;
+}
