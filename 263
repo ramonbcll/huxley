@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node node;
+struct node {
+  int item;
+  node *next;
+};
+
+node* add(node *head, int item) {
+  node *new_node = (node*) malloc(sizeof(node));
+  new_node->item = item;
+  new_node->next = head;
+  return new_node;
+}
+
+int search(node *list1, node *list2) {
+  if(list1->item == list2->item) {
+    return 1;
+  }
+  if(list2->next == NULL) {
+    return 0;
+  }
+  search(list1, list2->next);
+}
+
+int verify(node *list3, int value) {
+  if(list3 != NULL) {
+    if(list3->item == value) {
+      return 0;
+    }
+  }
+  else {
+    return 1;
+  }
+  verify(list3->next, value);
+}
+
+node* num(node *list1, node *list2, node *list3) {
+  while(list1 != NULL) {
+    int value = search(list1, list2);
+    if(value == 1) {
+      int a = verify(list3, list1->item);
+      if(a == 1) {
+        list3 = add(list3, list1->item);
+      }
+    }
+    list1 = list1->next;
+  }
+  return list3;
+}
+
+void sort(node *i, node *j) {
+  if(i->item > j->item)	{
+		int aux;
+		aux = i->item;
+		i->item = j->item;
+		j->item = aux;
+	}
+	if(i->next->next == NULL) {
+		return;
+	}
+	if(j->next == NULL) {
+		i = i->next;
+		j = i;
+	}
+	sort(i, j->next);
+}
+
+int main() {
+  node* list1 = NULL;
+  node* list2 = NULL;
+  node* list3 = NULL;
+  int n, count = 0;
+
+  while (count < 40) {
+    scanf("%d", &n);
+    if(count < 20) {
+      list1 = add(list1, n);
+    }
+    else {
+      list2 = add(list2, n);
+    }
+    count += 1;
+  }
+
+  list3 = num(list1, list2, list3);
+
+  if(list3 == NULL) {
+    printf("VAZIO\n");
+  }
+  else {
+    sort(list3, list3);
+    while (list3 != NULL) {
+      printf("%d\n", list3->item);
+      list3 = list3->next;
+    }
+  }
+
+  return 0;
+}
