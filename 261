@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node node;
+struct node {
+  int item;
+  node *next;
+};
+
+node* add(node *head, int item) {
+  node *new_node = (node*) malloc(sizeof(node));
+  new_node->item = item;
+  new_node->next = head;
+  return new_node;
+}
+
+int verify(node *list1, int value, int a) {
+  if(list1 == NULL) {
+    return a;
+  }
+  else if(value == list1->item) {
+    a = 1;
+    return a;
+  }
+  else {
+    verify(list1->next, value, a);
+  }
+}
+
+void sub(node *list1, node *list2) {
+  int a;
+  
+  while(list2 != NULL) {
+    a = verify(list1, list2->item, 0);
+    if(a == 0) {
+      printf("0\n");
+      return;
+    }
+    list2 = list2->next;
+  }
+  printf("%d\n", a);
+
+  return;
+}
+
+int main () {
+  node *list1 = NULL;
+  node *list2 = NULL;
+  int i, j, n, l1, l2;
+
+  scanf("%d", &l1);
+
+  for(i = 0; i < l1; i++) {
+    scanf("%d", &n);
+    list1 = add(list1, n);
+  }
+
+  scanf("%d", &l2);
+
+  for(j = 0; j < l2; j++) {
+    scanf("%d", &n);
+    list2 = add(list2, n);
+  }
+
+  sub(list1, list2);
+
+  return 0;
+}
