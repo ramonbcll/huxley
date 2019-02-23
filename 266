@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node node;
+struct node {
+  int item;
+  node *next;
+};
+
+node* add(node *head, int item) {
+  node *new_node = (node*) malloc(sizeof(node));
+  new_node->item = item;
+  new_node->next = head;
+  return new_node;
+}
+
+void print(node *head) {
+  while (head != NULL) {
+  printf("%d ", head->item);
+  head = head->next;
+  }
+}
+
+void sort(node *i, node *j) {
+  if(i->item > j->item)	{
+		int aux;
+		aux = i->item;
+		i->item = j->item;
+		j->item = aux;
+	}
+	if(i->next->next == NULL) {
+		return;
+	}
+	if(j->next == NULL) {
+		i = i->next;
+		j = i;
+	}
+	sort(i, j->next);
+}
+
+
+int main() {
+  node* list = NULL;
+  int n;
+
+  while (scanf("%d", &n) != EOF) {
+    list = add(list, n);    
+  }
+  sort(list, list);
+  print(list);
+
+  return 0;
+}
