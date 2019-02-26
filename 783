@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+typedef struct bt bt;
+struct bt {
+  int item;
+  bt *left;
+  bt *right;
+};
+
+bt* create(int item, bt *right, bt *left) {
+  bt *new = (bt*) malloc(sizeof(bt));
+  new->item = item;
+  new->left = left;
+  new->right = right;
+  return new;
+}
+
+bt* add(bt *bt, int item) {
+  if (bt == NULL) {
+    bt = create(item, NULL, NULL);
+  }
+  else if (bt->item > item) {
+    bt->left = add(bt->left, item);
+  }
+  else {
+    bt->right = add(bt->right, item);
+  }
+  return bt;
+}
+
+void print(bt *bt) {
+  if(bt == NULL) {
+    printf(" () ");
+    return;
+  }
+  else {
+    printf(" ( %d ", bt->item);
+    print(bt->left);
+    print(bt->right);
+    printf(") ");
+  }
+}
+
+int main() {
+  int n;
+
+  while (scanf("%d", &n) != EOF) {
+    bt* bt = add(bt, n);
+    printf("----\nAdicionando %d\n", n);
+    printf("  ");
+    print(bt);
+    printf("\n");
+  }
+  printf("----");
+
+	return 0;
+}
