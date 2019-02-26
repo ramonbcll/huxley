@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+int count;
+
+typedef struct bt bt;
+
+struct bt {
+  int item;
+  bt *left;
+  bt *right;
+};
+
+bt* add(int item, bt *right, bt *left) {
+  bt *new = (bt*) malloc(sizeof(bt));
+  new->item = item;
+  new->left = left;
+  new->right = right;
+  return new;
+}
+
+bt* create(char *item) {
+  char aux[256];
+  int i = 0, tam = strlen(item);
+  if(tam == count) {
+    return NULL;
+  }
+  while(item[count] == '(' || item[count] == ' ') {
+    count += 1;
+  }
+  if(item[count] == ')') {
+    while(item[count] == ')') {
+      count += 1;
+    }
+    return NULL;
+  }
+  while(item[count] >= '0' && item[count] <= '9') {
+    aux[i] = item[count];
+    count += 1;
+    i += 1;
+  }
+  aux[i] = '\0';
+  return add(atoi(aux), create(item), create(item));
+}
+
+int verify(bt *bt, int item, int p, int *aux) {
+  if(bt != NULL) {
+    //printf("%d %d\n", bt->item, item);
+    if(bt->item == item) {
+      printf("ESTA NA ARVORE\n%d\n", p);
+      *aux = 1;
+      return 1;
+    }
+    else {
+      verify(bt->left, item, p+1, aux);
+      //p -= 1;
+      verify(bt->right, item, p+1, aux);
+      //p -= 1;
+    }
+  }
+  else {
+    if(*aux != 1) {
+      return 0;
+    }
+    else {
+      return 1;
+    }
+  }
+}
+
+int main() {
+  char item[256];
+  int num, aux = 0;
+  count = 0;
+  scanf("%[^\n]", item);
+  scanf("%d", &num);
+  bt* b = create(item);
+  int a = verify(b, num, 0, &aux);
+  if(a == 0) {
+    printf("NAO ESTA NA ARVORE\n-1\n");
+  }
+
+	return 0;
+}
