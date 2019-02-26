@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+int count = 0;
+
+typedef struct bt bt;
+
+struct bt {
+  int item;
+  bt *left;
+  bt *right;
+};
+
+bt* add(int item, bt *right, bt *left) {
+  bt *new = (bt*) malloc(sizeof(bt));
+  new->item = item;
+  new->left = left;
+  new->right = right;
+  return new;
+}
+
+bt* create(char *item) {
+  char aux[256];
+  int i = 0, tam = strlen(item);
+  if(tam == count) {
+    return NULL;
+  }
+  while(item[count] == '(' || item[count] == ' ') {
+    count += 1;
+  }
+  if(item[count] == ')') {
+    while(item[count] == ')') {
+      count += 1;
+    }
+    return NULL;
+  }
+  while(item[count] >= '0' && item[count] <= '9') {
+    aux[i] = item[count];
+    count += 1;
+    i += 1;
+  }
+  aux[i] = '\0';
+  return add(atoi(aux), create(item), create(item));
+}
+
+int verify(bt *bt) {
+  if(bt != NULL) {
+    if((bt->left != NULL && bt->left->item > bt->item) || (bt->right != NULL && bt->right->item < bt->item)) {
+      return 0;
+    }
+    else {
+      verify(bt->left);
+      verify(bt->right);
+    }
+  }
+  else {
+    return 1;
+  }
+}
+
+int main() {
+  char item[256];
+  count = 0;
+  scanf("%[^\n]", item);
+  bt* b = create(item);
+  int a = verify(b);
+  if(a == 1) {
+    printf("VERDADEIRO\n");
+  }
+  else {
+    printf("FALSO\n");
+  }
+
+	return 0;
+}
