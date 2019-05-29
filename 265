@@ -52,7 +52,7 @@ node* count(node *letter, node *amount, int total, char aux) {
 }
 
 void print(node *head, node *numbers, char aux) {
-	if(head->item == ' ') {
+	if(head->item == aux) {
 		printf("%c %c\n", head->item, numbers->item);
 		head = head->next;
 		numbers = numbers->next;
@@ -72,6 +72,7 @@ void print(node *head, node *numbers, char aux) {
 int main() {
 	node *list1 = NULL;
 	node *list2 = NULL;
+	node *list3 = NULL;
 
 	char f[256], aux;
 	scanf("%[^\n]s", f);
@@ -84,7 +85,11 @@ int main() {
 	}
 	sort(list1, list1);
 	list2 = count(list1, list2, 0, list1->item);
-	print(list1, list2, list1->item);
+	while(list1 != NULL) {
+		list3 = add(list3, list1->item);
+		list1 = list1->next;
+	}
+	print(list3, list2, list3->item);
 
 	return 0;
 }
