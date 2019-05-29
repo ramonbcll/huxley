@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct node node;
+struct node {
+	char item;
+	node *next;
+};
+
+node* add(node *head, char item) {
+	node *new_node = (node*) malloc(sizeof(node));
+	new_node->item = item;
+	new_node->next = head;
+	return new_node;
+}
+
+void sort(node *i, node *j) {
+    if(i->item > j->item)	{
+		char aux;
+		aux = i->item;
+		i->item = j->item;
+		j->item = aux;
+	}
+	if(i->next->next == NULL) {
+		return;
+	}
+	if(j->next == NULL) {
+		i = i->next;
+		j = i;
+	}
+	sort(i, j->next);
+}
+
+node* count(node *letter, node *amount, int total, char aux) {
+	if(letter == NULL) {
+		return amount;
+	}
+	if(aux == letter->item) {
+		total += 1;
+		letter = letter->next;
+	}
+	else {
+		char str = total + '0';
+		amount = add(amount, str);
+		aux = letter->item;
+		total = 0;
+	}
+	count(letter, amount, total, aux);
+}
+
+void print(node *head, node *numbers, char aux) {
+	if(head->item == ' ') {
+		printf("%c %c\n", head->item, numbers->item);
+	}
+	while (head != NULL) {
+	  	if(aux == head->item) {
+			head = head->next;
+		}
+		else {
+			printf("%c %c\n", head->item, numbers->item);
+			aux = head->item;
+			numbers = numbers->next;
+		}
+  	}
+}
+
+int main() {
+	node *list1 = NULL;
+	node *list2 = NULL;
+	char f[256], aux;
+	scanf("%[^\n]s", f);
+
+	int i = 0, tam = strlen(f);
+
+	while(i < tam) {
+		list1 = add(list1, f[i]);
+		i++;
+	}
+	sort(list1, list1);
+	count(list1, list2, 0, list1->item);
+	//print(list1, list2, list1->item);
+
+	return 0;
+}
