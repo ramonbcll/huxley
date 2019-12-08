@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_SIZE 11
+
+typedef struct adj_list adj_list;
+typedef struct graph graph;
+
+struct adj_list {
+	int item;
+	adj_list *next;
+};
+
+struct graph {
+	adj_list *vertices[MAX_SIZE];
+	short visited[MAX_SIZE];
+};
+
+adj_list* create_adj_list(int item) {
+	adj_list *new_adj_list = (adj_list*) malloc(sizeof(adj_list));
+	new_adj_list->item = item;
+	new_adj_list->next = NULL;
+	return new_adj_list;
+}
+
+graph* create_graph() {
+	graph *new_graph = (graph*) malloc(sizeof(graph));
+	int i;
+	
+	for (i = 1; i <= MAX_SIZE - 1; i++) {
+		new_graph->vertices[i] = NULL;
+		new_graph->visited[i] = 0;
+	}
+	return new_graph;
+}
+
+void add_edge(graph *graph, int vertex1, int vertex2) {
+	adj_list *vertex = create_adj_list(vertex2);
+	vertex->next = graph->vertices[vertex1];
+	graph->vertices[vertex1] = vertex;
+
+	vertex = create_adj_list(vertex1);
+	vertex->next = graph->vertices[vertex2];
+	graph->vertices[vertex2] = vertex;
+}
+//profundidade
+void dfs(graph *graph, int source) {
+	graph->visited[source] = 1;
+	printf("%d\n", source);
+	
+	adj_list *adj_list = graph->vertices[source];
+	
+	while (adj_list != NULL) {
+		if (!graph->visited[adj_list->item]) {
+			dfs(graph, adj_list->item);
+		}
+		adj_list = adj_list->next;
+	}
+}
+
+int main() {
+    graph *graph = create_graph();
+    
+    return 0;
+}
