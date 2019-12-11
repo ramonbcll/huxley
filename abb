@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct bt bt;
+
+struct bt {
+	int item;
+	bt *left;
+	bt *right;
+};
+
+bt* create_bt(int item, bt *left, bt *right) {
+	bt *new_bt = (bt*) malloc(sizeof(bt));
+	new_bt->item = item;
+	new_bt->left = left;
+	new_bt->right = right;
+	
+	return new_bt;
+}
+
+bt* add(bt *bt, int item) {
+  	if (bt == NULL) {
+    	bt = create_bt(item, NULL, NULL);
+  	}
+ 	else if (bt->item > item) {
+    	bt->left = add(bt->left, item);
+  	}
+  	else {
+    	bt->right = add(bt->right, item);
+  	}
+  	return bt;
+}
+
+void print(bt *bt) {
+  	if(bt == NULL) {
+    	printf(" () ");
+    	return;
+  	}
+  	else {
+    	printf(" ( %d ", bt->item);
+    	print(bt->left);
+    	print(bt->right);
+    	printf(") ");
+  	}
+}
+
+bt* minValueNode(bt* tree) { 
+    bt* node = tree; 
+  
+    while (node->left != NULL) {
+        node = node->left; 
+    }
+  
+    return node; 
+} 
+
+bt* delete(bt* root, int item) { 
+    if (root == NULL) {
+    	return root;
+    } 
+    if (item < root->item) {
+        root->left = delete(root->left, item); 
+    }
+    else if (item > root->item) {
+        root->right = delete(root->right, item); 
+    }
+    else { 
+        if (root->left == NULL) { 
+            bt *temp = root->right; 
+            free(root); 
+            return temp; 
+        } 
+        else if (root->right == NULL) { 
+            bt *temp = root->left; 
+            free(root); 
+            return temp; 
+        }
+        else {
+        	bt* r = root->right;
+          	bt* l = root->left;
+        	if((item - l->item) < (r->item - item)) { // mandar para a esquerda e olhar à direita / criar função
+        		bt* temp = minValueNode(root->left); 
+	        	root->item = temp->item; 
+	        	root->left = delete(root->left, temp->item); 
+        	}
+        	else {									  // mandar para a direita e olhar à esquerda / criar função
+		        bt* temp = minValueNode(root->right); 
+		        root->item = temp->item; 
+		        root->right = delete(root->right, temp->item);
+        	}
+        }
+    } 
+    return root; 
+}
+
+int main() {
+  	int n;
+  	bt* bt = NULL;
+  	while (scanf("%d", &n) != EOF) {
+    	bt = add(bt, n);
+    	printf("----\nAdicionando %d\n", n);
+    	printf("  ");
+    	print(bt);
+    	printf("\n");
+  	}
+  	printf("----");
+  	delete(bt, 23);
+  	
+  	printf("\n");
+  	print(bt);
+  	printf("\n");
+
+	return 0;
+}
