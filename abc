@@ -1,0 +1,131 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+typedef struct node node;
+typedef struct stack stack;
+typedef struct binary_tree binary_tree;
+
+struct binary_tree {
+  int item;
+  binary_tree *left;
+  binary_tree *right;
+};
+
+struct node {
+  char item;
+  node *next;
+};
+
+struct stack {
+  int size;
+  node *top;
+};
+
+stack* createStack() {
+  stack *new_stack = (stack*) malloc(sizeof(stack));
+  new_stack->size = 0;
+  new_stack->top = NULL;
+  return new_stack;
+}
+
+node* createNode(char item)
+{
+  node *new_node = (node*) malloc(sizeof(node));
+  new_node->item = item;
+  new_node->next = NULL;
+  return new_node;
+}
+
+void push(stack *stack, char item) {
+  node *new_node = createNode(item);
+  new_node->next = stack->top;
+  stack->top = new_node;
+  stack->size += 1;
+}
+
+int peek(stack *stack) {
+  return stack->top->item;
+}
+
+int pop(stack *stack) {
+  char value = stack->top->item;
+  node *el = stack->top;
+  stack->top = stack->top->next;
+  free(el);
+
+  return value;
+}
+
+binary_tree* create_empty_binary_tree()
+{
+return NULL;
+}
+
+binary_tree* create_binary_tree(int item, binary_tree *left, binary_tree *right) {
+  binary_tree *new_binary_tree = (binary_tree*) malloc(sizeof(binary_tree));
+  new_binary_tree->item = item;
+  new_binary_tree->left = left;
+  new_binary_tree->right = right;
+  return new_binary_tree;
+}
+
+binary_tree* add_left(binary_tree *bt, int item) {
+  if (bt == NULL) {
+    bt = create_binary_tree(item, NULL, NULL);
+  }
+  else {
+    bt->left = add_left(bt->left, item);
+  }
+  return bt;
+}
+
+binary_tree* add_right(binary_tree *bt, int item) {
+  if (bt == NULL) {
+    bt = create_binary_tree(item, NULL, NULL);
+  }
+  else {
+    bt->right = add_right(bt->right, item);
+  }
+  return bt;
+}
+
+int main() {
+
+  stack *stack = createStack();
+  char in[5];
+  int wtf = 1;
+
+  while(scanf(" %[^\n]", in) != EOF) {
+    if(in[0] == ')') {
+        if(stack->top == NULL) {
+          wtf = -1;
+          printf("No\n");
+          break;
+        }
+        else {
+          if(peek(stack) == '(' && in[0] == ')') {
+            pop(stack);
+          }
+          else {
+            wtf = 0;
+          }
+        }
+      }
+    else if(in[0] == '(') {
+      push(stack, in[0]);
+    }
+    if(stack->top == NULL && wtf == 1) {
+      printf("completa\n");
+    }
+    if(stack->top != NULL || wtf == 0) {
+      wtf = 1;
+      printf("nao completa\n");
+    }
+    stack->top = NULL;
+    wtf = 1;
+  }
+
+  return 0;
+}
