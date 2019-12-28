@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node node;
+typedef struct pq pq;
+
+struct node {
+  int priority;
+  node *next;
+};
+
+struct pq {
+  int size;
+  node *head;
+};
+
+pq* create_pq() {
+  pq* new_queue = (pq*) malloc(sizeof(pq));
+  new_queue->head = NULL;
+  new_queue->size = 0;
+    return new_queue;
+}
+
+node* create_node(int p) {
+  node* new_node = (node*) malloc(sizeof(node));
+  new_node->priority = p;
+  new_node->next = NULL ;
+  return new_node;
+}
+
+int is_empty(pq *pq) {
+  return (pq == NULL);
+}
+
+void enqueue(pq *pq, int p) {
+  node* new_node = create_node(p);
+  if (pq->head == NULL) {
+    new_node->next = pq->head;
+    pq->head = new_node;
+  }
+  else if (p > pq->head->priority) {
+    new_node -> next = pq->head;
+     pq->head = new_node;
+    } 
+    else {
+      node* current = pq->head;
+      while ((current->next != NULL) &&(current->next->priority > p)) {
+        current = current->next;
+      }
+      new_node->next = current->next;
+      current->next = new_node;
+    }
+}
+
+node* dequeue(pq *pq)
+{
+  if (is_empty(pq)) {
+    printf("Priority Queue underflow");
+    return NULL;
+  }
+  else {
+    node *node = pq->head;
+    pq->head = pq->head->next;
+    node->next = NULL;
+    return node;
+  }
+}
+
+int main() {
+  int t, n, i;
+  pq* queue = create_pq();
+  scanf("%d", &t);
+
+  for(i = 0; i < t; i++) {
+    scanf("%d", &n);
+    enqueue(queue, n);
+  }
+
+  while(queue->head != NULL) {
+    printf("%d\n", queue->head->priority);
+    queue->head = queue->head->next;
+  }
+
+  //dequeue(queue);
+
+  return 0;
+}
